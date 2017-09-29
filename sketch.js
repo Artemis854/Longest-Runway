@@ -1,6 +1,6 @@
 
 
-/*var points = [
+var points = [
     [0, 0],
     [50, 0],
     [50, 50],
@@ -8,23 +8,20 @@
     [25, 20],
     [10, 50],
     [0, 50]
-];*/
+];
 
-var points = [
-    [90,0],
-    [90,60],
-    [80,50],
-    [60,60],
-    [50,40],
-    [40,60],
-    [0,0],
-    [30,40],
-    [50,0],
-    [80,40]
-]
-
-var n = points.length;
-var m;
+/*var points = [
+    [90, 0],
+    [90, 60],
+    [80, 50],
+    [60, 60],
+    [50, 40],
+    [40, 60],
+    [0, 0],
+    [30, 40],
+    [50, 0],
+    [80, 40]
+];
 
 /*
      * 9,0
@@ -38,6 +35,9 @@ var m;
      * 5,0
      * 8,4
      */
+
+var n = points.length;
+var m;
 
 var lines = [];
 var maxLine = {x1 : 0, y1 : 0, x2 : 0, y2 : 0, length : 0};
@@ -103,6 +103,7 @@ function draw(){
 
             //Set escaped
             var escaped = false;
+            var change = false;
 
             //Create temporary line object for current set of vertices
             tLine = {x : {a : x1, b : x2-x1}, y : {a : y1, b : y2-y1}};
@@ -142,23 +143,28 @@ function draw(){
                 //t = (qx*ry - rx*qy / px*qy - qx*py)
                 //Store (px*qy - qx*py), common in both and need to ensure it is not 0
 
-                var d = (px*qy) - (qx*py);
+                var d = (qy*px) - (py*px);
 
                 //If lines are parallel, continue to next iteration of loop
                 if(d == 0){continue;}
 
-                var s = (px*ry - rx*py) / d;
-                var t = (qx*ry - rx*qy) / d;
+                var s = (qy*rx - rx*qx) / d;
+                var t = (px*ry - rx*py) / ((-1)*d);
 
                 //Check is t is in bounds of lines[k], 0 < t < 1
                 //If not, intersection is outside of polygon, and should be skipped
-                if((t <= 0)&&(t >= 1)){
+                if((t <= 0)||(t >= 1)){
                     continue;
                 }
 
+                console.log('s: '+s+' tLine: '+JSON.stringify(tLine));
+                console.log('t: '+t+' lines[k]: '+JSON.stringify(lines[k]));
+                console.log('px: '+px+' qx: '+qx+' rx: '+rx+' py: '+py+' qy: '+qy+' ry: '+ry);
+                console.log('==========');
+
                 //Check if s is in bounds of tLine, 0 < s < 1
                 //If so, intersection is between tLine vertices (too short), should line[k]
-                if((s >= 0)&&(t <= 1)){
+                if((s > 0)&&(s < 1)){
                     escaped = true;
                     break;
                 }
@@ -167,16 +173,17 @@ function draw(){
 
                 if(s < minS){
                     minS = s;
+                    change = true;
                 }
 
                 if(s > maxS){
                     maxS = s;
+                    change = true;
                 }
             }
 
             //Check if new points create longer line than maxLine if loop was not broken
-            if(!escaped){
-
+            if((!escaped) && (change==true)){
                 //Calculate coordinates and length using tLine parametric equation
                 tempX1 = tLine['x']['a'] + minS*tLine['x']['b'];
                 tempY1 = tLine['y']['a'] + minS*tLine['y']['b'];
@@ -193,6 +200,9 @@ function draw(){
                     maxLine['y2'] = tempY2;
                     maxLine['length'] = length;
                 }
+
+                //console.log('minS: '+minS+'maxS: '+maxS);
+                //console.log(maxLine);
             }
         }
     }
