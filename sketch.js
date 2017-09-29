@@ -1,44 +1,56 @@
 
 /*var points = [
-    [0,0],
-    [40,0],
-    [40,40]
-];*/
+    [0, 2017],
+    [-2017, -2017],
+    [2017, 0]
+];
 var points = [
     [0, 0],
     [50, 0],
     [50, 50],
     [40, 50],
     [25, 20],
-    [10, 50],
+];
+
+var points = [
+    [0, 20],
+    [40, 0],
+    [40, 20],
+    [70, 50],
+    [50, 70],
+    [30, 50],
     [0, 50]
-];
+]
 
-/*var points = [
-    [90, 0],
-    [90, 60],
-    [80, 50],
-    [60, 60],
+var points = [
+    [0, 20],
+    [40, 0],
+    [70, 20],
+    [60, 50],
+    [50, 70],
+    [10, 50],
     [50, 40],
-    [40, 60],
-    [0, 0],
-    [30, 40],
-    [50, 0],
-    [80, 40]
-];
+    [40, 10],
+    [10, 30]
+]
 
-/*
-     * 9,0
-     * 9,6
-     * 8,5
-     * 6,6
-     * 5,4
-     * 4,6
-     * 0,0
-     * 3,4
-     * 5,0
-     * 8,4
-     */
+var points = [
+    [0, 0],
+    [40, 0],
+    [50, 10],
+    [50, 20],
+    [60, 50],
+    [50, 70],
+    [20, 50],
+    [50, 40],
+    [40, 30],
+    [10, 30],
+    [30, 25],
+    [25, 10],
+    [10, 10]
+]*/
+
+var startTime = 0;
 
 var n = points.length;
 var m;
@@ -87,6 +99,8 @@ function draw(){
     scale(3.0);
     endShape(CLOSE); //End polygon and close last line
     console.log(lines); //Checking lines array
+
+    startTime = Date.now();
 
     //Check all lines for max length using the points array
     //Initiate a new line and cross reference with the lines array for intersections
@@ -226,6 +240,8 @@ function draw(){
             }
         }
     }
+
+    console.log('RunTime: '+(Date.now() - startTime)+'ms');
 
     stroke('red');
     line(maxLine['x1'], maxLine['y1'], maxLine['x2'], maxLine['y2']);
