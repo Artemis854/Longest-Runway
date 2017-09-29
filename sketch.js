@@ -1,5 +1,9 @@
 
-
+/*var points = [
+    [0,0],
+    [40,0],
+    [40,40]
+];*/
 var points = [
     [0, 0],
     [50, 0],
@@ -104,6 +108,7 @@ function draw(){
             //Set escaped
             var escaped = false;
             var change = false;
+            var initial = true;
 
             //Create temporary line object for current set of vertices
             tLine = {x : {a : x1, b : x2-x1}, y : {a : y1, b : y2-y1}};
@@ -143,24 +148,19 @@ function draw(){
                 //t = (qx*ry - rx*qy / px*qy - qx*py)
                 //Store (px*qy - qx*py), common in both and need to ensure it is not 0
 
-                var d = (qy*px) - (py*px);
+                var d = (qx*py) - (px*qy);
 
                 //If lines are parallel, continue to next iteration of loop
                 if(d == 0){continue;}
 
-                var s = (qy*rx - rx*qx) / d;
-                var t = (px*ry - rx*py) / ((-1)*d);
+                var s = (qx*ry - rx*qy) / d;
+                var t = (px*ry - rx*py) / d;
 
                 //Check is t is in bounds of lines[k], 0 < t < 1
                 //If not, intersection is outside of polygon, and should be skipped
                 if((t <= 0)||(t >= 1)){
                     continue;
                 }
-
-                console.log('s: '+s+' tLine: '+JSON.stringify(tLine));
-                console.log('t: '+t+' lines[k]: '+JSON.stringify(lines[k]));
-                console.log('px: '+px+' qx: '+qx+' rx: '+rx+' py: '+py+' qy: '+qy+' ry: '+ry);
-                console.log('==========');
 
                 //Check if s is in bounds of tLine, 0 < s < 1
                 //If so, intersection is between tLine vertices (too short), should line[k]
@@ -169,16 +169,36 @@ function draw(){
                     break;
                 }
 
+                console.log('s: '+s+' tLine: '+JSON.stringify(tLine));
+                console.log('t: '+t+' lines[k]: '+JSON.stringify(lines[k]));
+                console.log('px: '+px+' qx: '+qx+' rx: '+rx+' py: '+py+' qy: '+qy+' ry: '+ry);
+                console.log('initial: '+initial);
+                console.log('==========');
+                
+
                 //If loop has not been terminated yet, check if s is greater on either ends
+                if(initial){
 
-                if(s < minS){
-                    minS = s;
-                    change = true;
-                }
+                    if(s < 0){
+                        minS = s;
+                        change = true;
+                    }
 
-                if(s > maxS){
-                    maxS = s;
-                    change = true;
+                    if(s > 1){
+                        maxS = s;
+                        change = true;
+                    }
+
+                    initial = false;
+                }else{
+
+                    if((s > minS)&&(s < 0)){
+                        minS = s;
+                    }
+
+                    if((s < maxS)&&(s > 1)){
+                        maxS = s;
+                    }
                 }
             }
 
@@ -201,8 +221,8 @@ function draw(){
                     maxLine['length'] = length;
                 }
 
-                //console.log('minS: '+minS+'maxS: '+maxS);
-                //console.log(maxLine);
+                console.log('minS: '+minS+'maxS: '+maxS);
+                console.log(maxLine);
             }
         }
     }
