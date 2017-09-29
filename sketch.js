@@ -40,7 +40,7 @@ var m;
      */
 
 var lines = [];
-var maxLine = 0;
+var maxLine = {x1 : 0, y1 : 0, x2 : 0, y2 : 0, length : 0};
 
 function setup(){
     createCanvas(640, 480);
@@ -71,8 +71,7 @@ function draw(){
     //Initiate lines counter, used later in CheckIntersection
     m = lines.length;
 
-    //Extra case for last element in vectors array, 
-    //need to accomadate for the last and first vectors
+    //Extra case for last element in vectors array, need to accomadate for the last and first vectors
     x1 = points[n-1][0];
     y1 = points[n-1][1];
     x2 = points[0][0];
@@ -97,6 +96,14 @@ function draw(){
             x2 = points[j][0];
             y2 = points[j][1];
 
+            //Set maxS, minS, and tempLine
+            var maxS = 1;
+            var minS = 0;
+            //var tempLine = {x1 : 0, y1 : 0, x2 : 0, y2 : 0, length : 0};
+
+            //Set escaped
+            var escaped = false;
+
             //Create temporary line object for current set of vertices
             tLine = {x : {a : x1, b : x2-x1}, y : {a : y1, b : y2-y1}};
 
@@ -108,10 +115,10 @@ function draw(){
                 //    (x1,y1) = tLine, (x2, y2) = lines[k]
 
                 //Only need 3 variables after equating the two parametric equations
-                //ex. (x1,y1) = (x1a,y1a) + t(x1b,y1b), and (x2,y2) = (x2a,y2a) + s(x2b,y2b)
+                //ex. (x1,y1) = (x1a,y1a) + s(x1b,y1b), and (x2,y2) = (x2a,y2a) + t(x2b,y2b)
                 //    (x1 = x2) => 
-                //    (x1a + t*x1b = x2a + s*x2b) => 
-                //    (t*x1b - s*x2b = x2a - x1a) =>
+                //    (x1a + s*x1b = x2a + t*x2b) => 
+                //    (s*x1b - t*x2b = x2a - x1a) =>
                 //    (px - qx = rx)
 
                 var px = tLine['x']['b'];
@@ -125,15 +132,72 @@ function draw(){
                 var qy = lines[k]['y']['b'];
                 var ry = lines[k]['y']['a'] - tLine['y']['a'];
 
+                //Find Intersection values
+                //Solve for s and t, they give the coordinates of intersection respective to their vectors
+                //s => (x1,y1) tLine
+                //t => (x2,y2) lines[k]
 
-                //t is the value when entered into the respective parametric equation
-                //results in the intersection coordinate
+                //Using matrices to find formulas to solve for s and t
+                //s = (px*ry - rx*py / px*qy - qx*py)
+                //t = (qx*ry - rx*qy / px*qy - qx*py)
+                //Store (px*qy - qx*py), common in both and need to ensure it is not 0
 
+                var d = (px*qy) - (qx*py);
+
+                //If lines are parallel, continue to next iteration of loop
+                if(d == 0){continue;}
+
+                var s = (px*ry - rx*py) / d;
+                var t = (qx*ry - rx*qy) / d;
+
+                //Check is t is in bounds of lines[k], 0 < t < 1
+                //If not, intersection is outside of polygon, and should be skipped
+                if((t <= 0)&&(t >= 1)){
+                    continue;
+                }
+
+                //Check if s is in bounds of tLine, 0 < s < 1
+                //If so, intersection is between tLine vertices (too short), should line[k]
+                if((s >= 0)&&(t <= 1)){
+                    escaped = true;
+                    break;
+                }
+
+                //If loop has not been terminated yet, check if s is greater on either ends
+
+                if(s < minS){
+                    minS = s;
+                }
+
+                if(s > maxS){
+                    maxS = s;
+                }
             }
 
-            //Store all intersections found, except if it is an endpoint
-            //Find the closest intersections
-            //Calculate length, compare and assign to maxLine if applicable
+            //Check if new points create longer line than maxLine if loop was not broken
+            if(!escaped){
+
+                //Calculate coordinates and length using tLine parametric equation
+                tempX1 = tLine['x']['a'] + minS*tLine['x']['b'];
+                tempY1 = tLine['y']['a'] + minS*tLine['y']['b'];
+                tempX2 = tLine['x']['a'] + maxS*tLine['x']['b'];
+                tempY2 = tLine['y']['a'] + maxS*tLine['y']['b'];
+
+                length = Math.sqrt(Math.pow(tempX2 - tempX1, 2) + Math.pow(tempY2 - tempY1, 2));
+
+                //Store if longer than maxLine
+                if(length > maxLine['length']){
+                    maxLine['x1'] = tempX1;
+                    maxLine['y1'] = tempY1;
+                    maxLine['x2'] = tempX2;
+                    maxLine['y2'] = tempY2;
+                    maxLine['length'] = length;
+                }
+            }
         }
     }
+
+    stroke('red');
+    line(maxLine['x1'], maxLine['y1'], maxLine['x2'], maxLine['y2']);
+    stroke('333');
 }
