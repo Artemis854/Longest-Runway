@@ -158,7 +158,7 @@ function draw(){
 
                 //Check is t is in bounds of lines[k], 0 < t < 1
                 //If not, intersection is outside of polygon, and should be skipped
-                if((t <= 0)||(t >= 1)){
+                if((t < 0)||(t > 1)){
                     continue;
                 }
 
@@ -179,12 +179,12 @@ function draw(){
                 //If loop has not been terminated yet, check if s is greater on either ends
                 if(initial){
 
-                    if(s < 0){
+                    if(s <= 0){
                         minS = s;
                         change = true;
                     }
 
-                    if(s > 1){
+                    if(s >= 1){
                         maxS = s;
                         change = true;
                     }
