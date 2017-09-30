@@ -3,15 +3,15 @@
     [0, 2017],
     [-2017, -2017],
     [2017, 0]
-];
+];/*
 var points = [
     [0, 0],
     [50, 0],
     [50, 50],
     [40, 50],
     [25, 20],
-];
-
+];*/
+/*
 var points = [
     [0, 20],
     [40, 0],
@@ -20,8 +20,8 @@ var points = [
     [50, 70],
     [30, 50],
     [0, 50]
-]
-
+]*/
+/*
 var points = [
     [0, 20],
     [40, 0],
@@ -29,11 +29,10 @@ var points = [
     [60, 50],
     [50, 70],
     [10, 50],
-    [50, 40],
-    [40, 10],
+    [40, 40],
+    [45, 10],
     [10, 30]
-]
-
+]*/
 var points = [
     [0, 0],
     [40, 0],
@@ -48,7 +47,7 @@ var points = [
     [30, 25],
     [25, 10],
     [10, 10]
-]*/
+]
 
 var startTime = 0;
 
@@ -95,8 +94,8 @@ function draw(){
 
     lines.push({x : {a : x1, b : x2-x1}, y : {a : y1, b : y2-y1}});
 
-    translate(width/2, height/2);
-    scale(3.0);
+    translate(width/2 - 50, height/2 - 50);
+    scale(3);
     endShape(CLOSE); //End polygon and close last line
     console.log(lines); //Checking lines array
 
@@ -183,13 +182,6 @@ function draw(){
                     break;
                 }
 
-                console.log('s: '+s+' tLine: '+JSON.stringify(tLine));
-                console.log('t: '+t+' lines[k]: '+JSON.stringify(lines[k]));
-                console.log('px: '+px+' qx: '+qx+' rx: '+rx+' py: '+py+' qy: '+qy+' ry: '+ry);
-                console.log('initial: '+initial);
-                console.log('==========');
-                
-
                 //If loop has not been terminated yet, check if s is greater on either ends
                 if(initial){
 
@@ -228,22 +220,30 @@ function draw(){
 
                 //Store if longer than maxLine
                 if(length > maxLine['length']){
-                    maxLine['x1'] = tempX1;
-                    maxLine['y1'] = tempY1;
-                    maxLine['x2'] = tempX2;
-                    maxLine['y2'] = tempY2;
-                    maxLine['length'] = length;
+                    maxLine['x1'] = tempX1.toFixed(2);
+                    maxLine['y1'] = tempY1.toFixed(2);
+                    maxLine['x2'] = tempX2.toFixed(2);
+                    maxLine['y2'] = tempY2.toFixed(2);
+                    maxLine['length'] = length.toFixed(9);
                 }
-
-                console.log('minS: '+minS+'maxS: '+maxS);
-                console.log(maxLine);
             }
         }
     }
 
-    console.log('RunTime: '+(Date.now() - startTime)+'ms');
+    var RunTime = Date.now() - startTime;
 
     stroke('red');
     line(maxLine['x1'], maxLine['y1'], maxLine['x2'], maxLine['y2']);
     stroke('333');
+    fill('grey');
+    textSize(11);
+    text('N: '+n, -60, -50);
+    text('P1: ('+maxLine['x1']+','+maxLine['y1']+') P2: ('+maxLine['x2']+','+maxLine['y2']+')', -60, -35);
+    text('Length: '+maxLine['length'], -60, -20);
+    text('RunTime: '+RunTime+'ms', -60, -5);
+
+    console.log('N: '+n);
+    console.log('P1: ('+maxLine['x1']+','+maxLine['y1']+') P2: ('+maxLine['x2']+','+maxLine['y2']+')');
+    console.log('Length: '+maxLine['length']);
+    console.log('RunTime: '+RunTime+'ms');
 }
