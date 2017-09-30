@@ -1,6 +1,6 @@
 #Pseudo-Code
 
-Longest-Runway(N)
+**Longest-Runway**(N)
 
 **for** i = 0 **to** N.length - 1
 
@@ -328,3 +328,15 @@ function draw(){
     console.log('Length: '+maxLine['length']);
     console.log('RunTime: '+RunTime+'ms');
 }`
+
+
+
+# Machine Specs
+
+![Screen Shot 2017-09-29 at 10.20.05 PM](../../../../../../../Desktop/Screen Shot 2017-09-29 at 10.20.05 PM.png)
+
+# Libraries
+
+Language: JavaScript
+
+Libraries: p5.js
