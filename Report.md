@@ -1,3 +1,9 @@
+# Student-Info
+
+Student ID: 100586212
+
+Name: Kaushal Patel
+
 #Pseudo-Code
 
 **Longest-Runway**(N)
